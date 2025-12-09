@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <title>幻卡扭域</title>
+        <style>
+            .cat{
+                position: fixed;
+                left: 0;
+                bottom: 0;
+
+            }
+        </style>
+    </head>
+    <body>
+        <div class="cat"><!--貓-->
+            <img src="">
+        </div>
+        <div><!--怪獸-->
+            <img src="">
+
+        </div>
+        <div><!--主角-->
+            <img src="">
+
+        </div>
+
+        <div>
+            <button src="">外觀</button>
+        </div>
+        <div>
+            <button src="">抽卡</button>
+        </div>
+        <div>
+            <button src="">設定</button>
+        </div>
+        <div class="wrap">
+            <img id="cat" src="cat1.jpg" alt="cat">
+            <div class="panel">
+                <div>點擊次數：<span id="clickCount">0</span></div>
+                <div>金幣：<span id="coins">0</span></div>
+            </div>
+        </div>
+
+        <audio id="meow" src="meow.mp3" preload="auto"></audio>
+
+        <script>
+            const img = document.getElementById("cat");
+            const audio = document.getElementById("meow");
+            const clickCountEl = document.getElementById("clickCount");
+            const coinsEl = document.getElementById("coins");
+
+            const img1 = "cat1.jpg";
+            const img2 = "cat2.jpg";
+            let toggled = false;
+
+            let clicks = 0;
+            let coins = 0;
+
+            img.onclick = () => 
+            {
+                // 貓叫一次：每次點都從頭播
+                audio.currentTime = 0;
+                audio.play();
+
+                // 換圖（來回切）
+                toggled = !toggled;
+                img.src = toggled ? img2 : img1;
+
+                // 記錄點擊次數與金幣
+                clicks += 1;
+                coins += 10;
+
+                // 更新顯示
+                clickCountEl.textContent = clicks;
+                coinsEl.textContent = coins;
+            };
+        </script>
+
+    </body>
+</html>
+
+
