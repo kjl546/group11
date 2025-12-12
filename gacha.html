@@ -255,7 +255,7 @@
     <!-- 左上角：選單 -->
     <div class="menu">
         <button id="btnCat" type="button" onclick="setPool('cat')">貓</button>
-        <button id="btnRole" type="button" onclick="setPool('role')">腳色</button>
+        <button id="btnRole" type="button" onclick="setPool('role')">角色</button>
     </div>
 
 
@@ -362,7 +362,7 @@
   const costNum = document.getElementById("costNum");
   const title = document.querySelector(".result-title");
 
-  title.textContent = `抽卡結果（${currentPoolKey === "cat" ? "貓卡池" : "腳色卡池"}）`;
+  title.textContent = `抽卡結果（${currentPoolKey === "cat" ? "貓卡池" : "角色卡池"}）`;
 
   costNum.textContent = cost;   // ✅ 顯示本次花費
 
