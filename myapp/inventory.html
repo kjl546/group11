@@ -161,10 +161,12 @@
                 characters.forEach(char => {
                     const card = document.createElement('div');
                     card.className = 'char-card';
+                    
+                    // 游標變成手指形狀，暗示可以點擊
+                    card.style.cursor = 'pointer'; 
 
-                    // 內層 HTML 結構
                     card.innerHTML = `
-                        <img src="${char.img}" alt="${char.name}" class="card-img" onerror="this.src='https://via.placeholder.com/150?text=No+Img'">
+                        <img src="${char.img}" alt="${char.name}" class="card-img">
                         <div class="card-info">
                             <div class="card-name">${char.name}</div>
                             <div class="card-power">
@@ -172,6 +174,18 @@
                             </div>
                         </div>
                     `;
+
+                    // *** 新增：點擊事件 ***
+                    card.onclick = () => {
+                        // 1. 儲存選擇的角色到 LocalStorage
+                        // 我們把整個物件轉成字串存起來，key 叫做 'selectedHero'
+                        localStorage.setItem('selectedHero', JSON.stringify(char));
+
+                        // 2. 視覺回饋 (簡單的 alert，或者你可以做更高級的樣式變化)
+                        alert(`已出戰：${char.name}！\n請回到主畫面查看。`);
+                        
+                        // (選用) 也可以加上邊框變色邏輯，這裡先保持簡單
+                    };
 
                     grid.appendChild(card);
                 });

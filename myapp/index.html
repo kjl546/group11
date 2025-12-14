@@ -165,6 +165,45 @@
                     transform: translateY(-30px);
                 }
             }
+            /* --- 新增：角色卡片樣式 (從 Inventory 搬過來的) --- */
+            .char-card {
+                width: 140px; /* 配合原本主角的大小 */
+                background: rgba(20, 20, 45, 0.9);
+                border: 2px solid #4a4a70;
+                border-radius: 12px;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            }
+
+            .card-img {
+                width: 100%;
+                aspect-ratio: 1/1;
+                object-fit: cover;
+                background: rgba(0,0,0,0.2);
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .card-info {
+                padding: 6px; /* 稍微縮小一點 padding 以適應主畫面 */
+                text-align: center;
+            }
+
+            .card-name {
+                font-size: 0.9rem;
+                font-weight: bold;
+                margin-bottom: 4px;
+                color: #fff;
+                white-space: nowrap; /* 避免名字換行 */
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .card-power {
+                font-size: 0.8rem;
+                color: #00e676;
+            }
         </style>
     </head>
     <body>
@@ -219,6 +258,30 @@
         <audio id="meow" src="meow.mp3" preload="auto"></audio>
 
         <script>
+            // --- 新增：讀取出戰角色 ---
+            window.addEventListener('DOMContentLoaded', () => {
+                const playerContainer = document.querySelector('.player');
+                
+                // 1. 從 LocalStorage 讀取資料
+                const savedData = localStorage.getItem('selectedHero');
+
+                // 2. 如果有資料，就取代原本的圖片
+                if (savedData) {
+                    const char = JSON.parse(savedData);
+
+                    // 替換 HTML 結構，使用跟角色庫一樣的卡片樣式
+                    playerContainer.innerHTML = `
+                        <div class="char-card">
+                            <img src="${char.img}" alt="${char.name}" class="card-img">
+                            <div class="card-info">
+                                <div class="card-name">${char.name}</div>
+                                <div class="card-power">⚔️ ${char.combatPower}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
             const img = document.getElementById("cat");
             const audio = document.getElementById("meow");
             const clickCountEl = document.getElementById("clickCount");
