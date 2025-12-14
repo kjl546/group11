@@ -24,6 +24,8 @@ const baseCharacters = [
 const MIN_POWER = 5000;
 const MAX_POWER = 15000;
 
+let userInventory = [];
+
 app.use(express.static(path.join(__dirname, 'public')));
 // *** 關鍵修改：設定靜態檔案目錄 (將 index.html 和 gacha.html 放在根目錄) ***
 // 讓 Express 能夠服務靜態檔案（例如 index.html, gacha.html, css, 圖片等）
@@ -39,7 +41,6 @@ app.get('/', (req, res) => {
 // 新增 Gacha API：抽卡 (POST /api/gacha)
 // ----------------------------------------------------------------------
 app.post('/api/gacha', express.json(), (req, res) => {
-    // 1. 取得前端傳來的抽卡次數 (times)
     const { times } = req.body;
     
     if (!times || typeof times !== 'number' || times <= 0) {
@@ -48,28 +49,38 @@ app.post('/api/gacha', express.json(), (req, res) => {
 
     const results = [];
     
-    // 2. 執行抽卡邏輯
     for (let i = 0; i < times; i++) {
-        // 從基礎角色中隨機選一個
         const randomIndex = getRandomInt(0, baseCharacters.length - 1);
         const baseCharacter = baseCharacters[randomIndex];
         
-        // 賦予隨機戰鬥力
+        // 產生角色
         const character = {
+            // 使用當下時間戳記+隨機數當作唯一 ID (避免重複)
+            uid: Date.now() + Math.random(), 
             id: baseCharacter.id,
             name: baseCharacter.name,
-            img: baseCharacter.img, // 圖片網址
-            combatPower: getRandomInt(MIN_POWER, MAX_POWER)
+            img: baseCharacter.img,
+            combatPower: getRandomInt(MIN_POWER, MAX_POWER),
+            obtainTime: new Date().toLocaleString() // 紀錄獲得時間
         };
+        
         results.push(character);
+        
+        // *** 新增：將抽到的角色存入伺服器的庫存陣列中 ***
+        userInventory.push(character);
     }
     
-    // 3. 回傳抽卡結果陣列
-    res.json({ results });
-
-    console.log(`[${new Date().toLocaleTimeString()}] API /api/gacha 被調用，抽取了 ${times} 次。`);
+    // 這裡我們把最新的庫存數量也回傳回去，方便前端顯示
+    res.json({ results, totalCount: userInventory.length });
+    
+    console.log(`抽卡 ${times} 次完成，目前庫存總數: ${userInventory.length}`);
 });
 
+app.get('/api/inventory', (req, res) => {
+    // 回傳整個庫存陣列
+    // 可以選擇反轉陣列 (reverse)，讓最新抽到的顯示在最前面
+    res.json([...userInventory].reverse());
+});
 
 // ----------------------------------------------------------------------
 // (可選) 保留您的舊有 API 路由
